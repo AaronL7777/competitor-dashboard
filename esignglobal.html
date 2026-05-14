@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eSignGlobal 竞品分析 — 业务全景</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a1a2e; line-height: 1.6; }
+.header { background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%); color: #fff; padding: 48px 40px 36px; }
+.header h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+.header .subtitle { font-size: 14px; color: rgba(255,255,255,0.7); }
+.header .meta { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.5); }
+.container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e8ecf0; }
+.card-title { font-size: 12px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.card-value { font-size: 28px; font-weight: 700; color: #1a1a2e; }
+.card-value .unit { font-size: 13px; font-weight: 400; color: #6b7280; margin-left: 2px; }
+.card-change { font-size: 12px; margin-top: 4px; }
+.card-change.up { color: #10b981; }
+.card-source { font-size: 10px; color: #9ca3af; margin-top: 6px; border-top: 1px solid #f3f4f6; padding-top: 6px; }
+.section { margin-bottom: 40px; }
+.section-title { font-size: 18px; font-weight: 600; color: #1a1a2e; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e8ecf0; }
+.chart-container { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #e8ecf0; margin-bottom: 20px; overflow-x: auto; }
+.chart-header { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #374151; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+table th { text-align: left; padding: 7px 8px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+table td { padding: 7px 8px; border-bottom: 1px solid #f3f4f6; font-size: 12px; }
+table tr:hover td { background: #f9fafb; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.tag-hk { background: #fce7f3; color: #9d174d; }
+.tag-sea { background: #d1fae5; color: #065f46; }
+.tag-eu { background: #dbeafe; color: #1e40af; }
+.tag-cn { background: #fef3c7; color: #92400e; }
+.insight-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px; margin-top: 16px; }
+.insight-box h4 { font-size: 13px; font-weight: 600; color: #1e40af; margin-bottom: 6px; }
+.insight-box p { font-size: 13px; color: #374151; line-height: 1.7; }
+.source-note { font-size: 11px; color: #9ca3af; margin-top: 8px; font-style: italic; }
+.warning-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin-top: 16px; }
+.warning-box h4 { font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 6px; }
+.warning-box p { font-size: 13px; color: #78350f; line-height: 1.7; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; }
+.stat-label { font-size: 13px; color: #6b7280; }
+.stat-value { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+.timeline { border-left: 2px solid #e5e7eb; padding-left: 20px; margin: 16px 0; }
+.timeline-item { position: relative; margin-bottom: 16px; }
+.timeline-item::before { content: ''; position: absolute; left: -26px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; border: 2px solid #fff; box-shadow: 0 0 0 2px #3b82f6; }
+.timeline-item .time { font-size: 11px; color: #6b7280; }
+.timeline-item .event { font-size: 13px; color: #1a1a2e; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>eSignGlobal（e签宝海外版）竞品分析 — 业务全景</h1>
+  <div class="subtitle">基于e签宝官网、沙利文报告、MarketsandMarkets、EMIS、官方客户案例等多源数据交叉验证</div>
+  <div class="meta">
+    <span>数据截止：2026年5月14日</span>
+    <span>母公司：杭州天谷信息科技有限公司（e签宝）</span>
+    <span>海外品牌：eSignGlobal / eSign.AI</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- KPI Cards -->
+<div class="grid">
+  <div class="card">
+    <div class="card-title">母公司（e签宝）2024年总营收</div>
+    <div class="card-value">突破5<span class="unit">亿人民币</span></div>
+    <div class="card-change up">↑ 同比+31%</div>
+    <div class="card-source">来源：沙利文2025中国电子签名报告 (2026.4发布)</div>
+  </div>
+  <div class="card">
+    <div class="card-title">中国市场份额</div>
+    <div class="card-value">35<span class="unit">%</span></div>
+    <div class="card-change up">超过第2-5名总和（CR5=69.4%）</div>
+    <div class="card-source">来源：沙利文2025中国电子签名报告</div>
+  </div>
+  <div class="card">
+    <div class="card-title">全球排名</div>
+    <div class="card-value">第6<span class="unit">位</span></div>
+    <div class="card-change">亚太第1 | 唯一中国前十</div>
+    <div class="card-source">来源：MarketsandMarkets《Digital Signature Market Forecast to 2030》</div>
+  </div>
+  <div class="card">
+    <div class="card-title">海外已服务企业</div>
+    <div class="card-value">~200<span class="unit">家（付费出海企业）</span></div>
+    <div class="card-change">官方PR称1000+，含免费/接收方</div>
+    <div class="card-source">来源：沙利文2025报告（主）；e签宝2025年度回顾（宣传口径）</div>
+  </div>
+  <div class="card">
+    <div class="card-title">估值（胡润独角兽）</div>
+    <div class="card-value">71<span class="unit">亿人民币</span></div>
+    <div class="card-change">连续5年唯一入选胡润全球独角兽榜（2020-2024）</div>
+    <div class="card-source">来源：2024胡润全球独角兽榜 / e签宝官网</div>
+  </div>
+  <div class="card">
+    <div class="card-title">日均签署量（全平台）</div>
+    <div class="card-value">3,000<span class="unit">万次</span></div>
+    <div class="card-change">年度付费客户28.6万家</div>
+    <div class="card-source">来源：e签宝2025年度回顾</div>
+  </div>
+  <div class="card">
+    <div class="card-title">员工总数</div>
+    <div class="card-value">1,000<span class="unit">余人</span></div>
+    <div class="card-change">全国50+分支机构</div>
+    <div class="card-source">来源：e签宝官网公司介绍</div>
+  </div>
+  <div class="card">
+    <div class="card-title">订阅收入占比</div>
+    <div class="card-value">83<span class="unit">%</span></div>
+    <div class="card-change">连续7个季度现金流为正</div>
+    <div class="card-source">来源：e签宝2025年度回顾</div>
+  </div>
+</div>
+
+<!-- Company Background -->
+<div class="section">
+  <div class="section-title">公司背景与融资</div>
+  <div class="two-col">
+    <div class="chart-container">
+      <div class="chart-header">融资历程</div>
+      <div class="timeline">
+        <div class="timeline-item"><span class="time">2015年初 · Pre-A轮</span><div class="event">1,000万 — 集素资本、绩优投资</div></div>
+        <div class="timeline-item"><span class="time">2016年12月 · A轮</span><div class="event">4,500万 — 东方富海领投</div></div>
+        <div class="timeline-item"><span class="time">2018年1月 · B轮</span><div class="event">1.5亿 — 前海梧桐领投</div></div>
+        <div class="timeline-item"><span class="time">2020年10月 · C轮</span><div class="event">6.5亿 — 蚂蚁金服领投，戈壁创投、靖亚资本跟投</div></div>
+        <div class="timeline-item"><span class="time">2020年11月 · D轮</span><div class="event">超10亿 — 投资方未披露</div></div>
+        <div class="timeline-item"><span class="time">2021年9月 · E轮</span><div class="event">12亿 — 红杉中国、IDG资本、隐山资本联合领投</div></div>
+      </div>
+      <div class="stat-row"><span class="stat-label">累计融资（已披露）</span><span class="stat-value">超30亿人民币</span></div>
+      <div class="stat-row"><span class="stat-label">最新估值</span><span class="stat-value">71亿人民币（2024胡润）</span></div>
+      <div class="stat-row"><span class="stat-label">核心投资方</span><span class="stat-value">蚂蚁集团（C轮领投）</span></div>
+      <p class="source-note">来源：e签宝官网公司介绍 + 百度百科 + 亿邦动力E轮报道</p>
+    </div>
+    <div class="chart-container">
+      <div class="chart-header">核心经营数据</div>
+      <table>
+        <tr><th>指标</th><th>数据</th><th>来源</th></tr>
+        <tr><td>成立时间</td><td>2002年12月（杭州）</td><td>官网</td></tr>
+        <tr><td>2024年总营收</td><td>突破5亿元</td><td>沙利文报告</td></tr>
+        <tr><td>2024年增速</td><td>同比+31%</td><td>沙利文报告</td></tr>
+        <tr><td>中国市场份额</td><td>35%（连续多年第一）</td><td>沙利文2025报告</td></tr>
+        <tr><td>年度付费客户</td><td>28.6万家</td><td>2025年度回顾</td></tr>
+        <tr><td>累计付费客户</td><td>63万家（企业39万+）</td><td>官网公司介绍</td></tr>
+        <tr><td>日均签署量</td><td>3,000万次</td><td>2025年度回顾</td></tr>
+        <tr><td>AI Agent年收入</td><td>突破1亿元</td><td>2025年度回顾</td></tr>
+        <tr><td>世界500强客户</td><td>100+家</td><td>官网</td></tr>
+        <tr><td>中国500强客户</td><td>200+家</td><td>官网</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- eSignGlobal International Business -->
+<div class="section">
+  <div class="section-title">eSignGlobal 海外业务详情</div>
+
+  <div class="chart-container">
+    <div class="chart-header">海外业务关键指标</div>
+    <table>
+      <tr><th>指标</th><th>数据</th><th>来源</th></tr>
+      <tr><td><strong>海外品牌名</strong></td><td>eSignGlobal → 2026年更名为 eSign.AI</td><td>官网域名跳转验证</td></tr>
+      <tr><td><strong>国际总部</strong></td><td>香港（2021年设立）</td><td>沙利文/官网</td></tr>
+      <tr><td><strong>海外分支机构</strong></td><td>香港、马来西亚、新加坡、法兰克福</td><td>官网公司介绍</td></tr>
+      <tr><td><strong>数据中心</strong></td><td>3个：香港、新加坡、法兰克福</td><td>2025年度回顾</td></tr>
+      <tr><td><strong>已服务海外企业</strong></td><td>~200家出海企业（官方PR称1000+，含免费/接收方）</td><td>沙利文报告（主）/ 2025年度回顾</td></tr>
+      <tr><td><strong>覆盖国家/地区</strong></td><td>100+</td><td>2025年度回顾</td></tr>
+      <tr><td><strong>全球排名</strong></td><td>第6位（亚太第1）</td><td>MarketsandMarkets</td></tr>
+      <tr><td><strong>全球化启动时间</strong></td><td>2023年正式发布eSign Global平台</td><td>官网新闻</td></tr>
+      <tr><td><strong>海外营收</strong></td><td>未单独披露</td><td>—</td></tr>
+    </table>
+    <div class="warning-box">
+      <h4>数据一致性说明</h4>
+      <p>e签宝官方对海外客户数存在两个口径：2025年度回顾称"已服务企业1000余家"，沙利文报告和全球化排名文章称"已服务200余家出海企业"。差异可能因为：1000家含免费/试用客户，200家为付费出海企业。<strong>海外营收未单独披露</strong>，无法独立验证。</p>
+    </div>
+    <p class="source-note">来源：e签宝2025年度回顾 | 沙利文报告 | 官网公司介绍 | MarketsandMarkets</p>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-container">
+      <div class="chart-header">海外市场布局</div>
+      <canvas id="geoChart" height="240"></canvas>
+      <p class="source-note">来源：官网 + 客户案例地域分布</p>
+    </div>
+    <div class="chart-container">
+      <div class="chart-header">海外客户行业分布</div>
+      <canvas id="industryChart" height="240"></canvas>
+      <p class="source-note">来源：eSignGlobal客户案例页面（6个公开案例）</p>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-header">已公开海外客户案例（20家，按来源可信度分级）</div>
+    <table style="font-size:12px">
+      <tr><th style="width:18%">客户</th><th style="width:10%">地区</th><th style="width:12%">行业</th><th style="width:35%">场景与关键数据</th><th style="width:10%">可信度</th></tr>
+      <tr style="background:#f0fdf4"><td><strong>蜜雪冰城</strong></td><td>全球</td><td>连锁餐饮</td><td>海外加盟合同；<strong>效率+80%，14天→2天</strong>；数万家门店</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>数码港 Cyberport</strong></td><td>香港</td><td>政府/科技园</td><td>采购/租赁/合作协议；<strong>签署周期-60%</strong></td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>中建国际 CSCI</strong></td><td>香港</td><td>建筑/央企</td><td>API集成幸福工友APP+智方便；<strong>入职半天→10分钟(-90%)</strong>；月省2万</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>远东宏信 3360.HK</strong></td><td>香港</td><td>融资租赁</td><td>租赁设备交接电子化；多语言+跨境合规</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>绿地香港</strong></td><td>香港</td><td>房地产</td><td>采购、财务、行政合同</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>OPPO</strong></td><td>全球</td><td>科技/电子</td><td>采购/分销/渠道；跨国审批合规</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>大族激光</strong></td><td>中国+海外</td><td>智能制造</td><td>数字化合同创新</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>OCBC华侨银行</strong></td><td>新加坡</td><td>银行</td><td>电子保单/内部公文/劳动合同；东南亚第二大金融集团</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#f0fdf4"><td><strong>FUNDPARK 丰泊</strong></td><td>香港</td><td>金融科技</td><td>跨境电商供应链金融；7000+商户/$40亿GMV</td><td>⭐⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>美光 Micron</strong></td><td>全球</td><td>半导体</td><td>HR/采购合同（推测）</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>加拿大鹅</strong></td><td>全球</td><td>服饰/零售</td><td>跨境协议签署</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>比特微 MicroBT</strong></td><td>全球</td><td>半导体</td><td>专属云+海外签；行政/销售/采购；覆盖20+国</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>史陶比尔 Stäubli</strong></td><td>全球(瑞士)</td><td>工业自动化</td><td>经销商/供应商合同；泛微OA集成；唯一纯外企</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>MCEX</strong></td><td>全球</td><td>交易所</td><td>金融交易协议自动流转</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>EFTpay</strong></td><td>香港</td><td>支付</td><td>香港金融科技大奖(2024)</td><td>⭐⭐</td></tr>
+      <tr style="background:#fffbeb"><td><strong>Lion-OCBC Capital</strong></td><td>新加坡</td><td>PE基金</td><td>战略联盟(2025.12)；新加坡政府背书</td><td>⭐⭐</td></tr>
+      <tr style="background:#fef2f2"><td>正大地产</td><td>全球</td><td>房地产</td><td>海外项目合同</td><td>⭐</td></tr>
+      <tr style="background:#fef2f2"><td>华化学集团</td><td>全球</td><td>化工</td><td>海外合作伙伴签署</td><td>⭐</td></tr>
+      <tr style="background:#fef2f2"><td>同程旅行</td><td>全球</td><td>在线旅游</td><td>海外市场协议</td><td>⭐</td></tr>
+      <tr style="background:#fef2f2"><td>肆玖科技</td><td>全球</td><td>科技</td><td>海外合作伙伴</td><td>⭐</td></tr>
+    </table>
+    <p style="font-size:11px;color:#6b7280;margin-top:8px">⭐⭐⭐ 官网正式案例 | ⭐⭐ 官方提及但无独立案例页 | ⭐ 仅SEO文章提及，关系深度未知</p>
+    <div class="insight-box">
+      <h4>客户画像特征</h4>
+      <p>• <strong>地理</strong>：香港7家 > 全球8家 > 新加坡3家 > 中国2家<br>
+      • <strong>客群</strong>：中国出海企业为主，纯外企仅史陶比尔(瑞士)和MCEX<br>
+      • <strong>行业</strong>：金融(6)>科技制造(4)>消费连锁(2)>房地产(2)>其他<br>
+      • <strong>有硬数据</strong>：蜜雪冰城(+80%)、数码港(-60%)、中建(-90%)、比特微(20+国)</p>
+    </div>
+  </div>
+</div>
+
+<!-- Pricing -->
+<div class="section">
+  <div class="section-title">产品功能与定价对比（eSignGlobal vs Tencent eSign）</div>
+  <div class="chart-container" style="max-width:100%;overflow-x:auto">
+    <div class="chart-header">套餐定价对比</div>
+    <table style="min-width:700px">
+      <tr><th rowspan="2">维度</th><th colspan="4" style="text-align:center;background:#fce7f3">eSignGlobal</th><th colspan="2" style="text-align:center;background:#ecfdf5">Tencent eSign（我方）</th></tr>
+      <tr><th>免费版</th><th>基础版</th><th>专业版</th><th>高级版</th><th>标准版</th><th>专业版</th></tr>
+      <tr><td><strong>年费/人</strong></td><td>免费</td><td>$299</td><td>联系销售</td><td>联系销售</td><td>$300</td><td>$3,999</td></tr>
+      <tr><td><strong>SES签署额度</strong></td><td>0份</td><td>100份</td><td>联系销售</td><td>联系销售</td><td>100份</td><td>100份</td></tr>
+      <tr><td><strong>用户席位</strong></td><td>3人</td><td>无限制</td><td>无限制</td><td>无限制</td><td>5个起</td><td>20个起</td></tr>
+      <tr><td><strong>eIDAS级别</strong></td><td>SES</td><td>SES</td><td>SES, AES, QES</td><td>SES, AES, QES</td><td style="color:#10b981;font-weight:500">SES, AES, QES</td><td style="color:#10b981;font-weight:500">SES, AES, QES</td></tr>
+    </table>
+  </div>
+
+  <div class="chart-container" style="max-width:100%;overflow-x:auto">
+    <div class="chart-header">核心功能逐项对比</div>
+    <table style="min-width:700px;font-size:12px">
+      <tr><th style="width:10%">类别</th><th style="width:22%">功能项</th><th>免费</th><th>基础</th><th>专业</th><th>高级</th><th>我方标准</th><th>我方专业</th></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>发起与签署</strong></td></tr>
+      <tr><td></td><td>基础控件</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>附件</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>模板发起</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>移动端自适应签署</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>多语言</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>通知渠道</td><td>邮件/Lark/站内信</td><td>+短信</td><td>+WhatsApp</td><td>+WhatsApp</td><td>邮件/短信</td><td>邮件/短信</td></tr>
+      <tr><td></td><td>批量发送</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>定时发送</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>签名组</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>21 FDA Part 11</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>组织与计费</strong></td></tr>
+      <tr><td></td><td>用户管理/用户组</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>审计日志</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>单点登录(SSO)</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>品牌定制(Logo/邮件/签署界面)</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>自定义角色</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>多工作空间</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>安全与合规</strong></td></tr>
+      <tr><td></td><td>双因子认证</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️ 待确认</td><td>⚠️ 待确认</td></tr>
+      <tr><td></td><td>ISO 27001 / 27018</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>⚠️ 待确认</td><td>⚠️ 待确认</td></tr>
+      <tr><td></td><td>GDPR合规</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>访问口令</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>短信验证</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>身份验证(IDV)</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>智方便验证</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>Singpass认证</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>水印</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>模板能力</strong></td></tr>
+      <tr><td></td><td>文件模板数量</td><td>1</td><td>10</td><td>200</td><td>1,500</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>信封模板数量</td><td>1</td><td>10</td><td>200</td><td>Unlimited</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>模板基础控件</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>模板管理</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>文件模板转交</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>模板权限</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>文件模板分类管理</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>文件模板复制</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>文件模板导出</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>文件模板导入</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>模板图片库</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>AI能力</strong></td></tr>
+      <tr><td></td><td>AI摘要生成器</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>AI翻译器</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>AI风险评估</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>AI合同拟定</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr><td></td><td>AI合同对比</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td style="color:#ef4444">❌</td><td style="color:#ef4444">❌</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>图章管理</strong></td></tr>
+      <tr><td></td><td>图章数量</td><td>5</td><td>5</td><td>100</td><td>1,000</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>图章权限</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr style="background:#f0f9ff"><td colspan="8"><strong>集成能力</strong></td></tr>
+      <tr><td></td><td>API</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td></td><td>Webhook</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+    </table>
+    <div class="insight-box">
+      <h4>功能差距分析</h4>
+      <p>我方Tencent eSign在<strong>eIDAS合规级别（全版本支持AES/QES）</strong>、<strong>图章权限</strong>和<strong>API/Webhook（标准版起）</strong>上领先于eSignGlobal同价位版本。但eSignGlobal在<strong>模板体系</strong>（最高1500/Unlimited）、<strong>AI能力</strong>（基础版起5项AI功能）、<strong>本地身份验证</strong>（Singpass/智方便）和<strong>通知渠道</strong>（Lark/WhatsApp）上显著领先。</p>
+    </div>
+    <p class="source-note">来源：内部竞品功能对比表（2026.5）</p>
+  </div>
+</div>
+
+<!-- Product & Compliance -->
+<div class="section">
+  <div class="section-title">产品能力与合规体系</div>
+  <div class="two-col">
+    <div class="chart-container">
+      <div class="chart-header">产品功能矩阵</div>
+      <table>
+        <tr><th>能力</th><th>状态</th><th>说明</th></tr>
+        <tr><td>基础电子签署</td><td style="color:#10b981">✅</td><td>SES级别</td></tr>
+        <tr><td>企业印章/公章</td><td style="color:#10b981">✅</td><td>e签宝核心能力延伸</td></tr>
+        <tr><td>模板管理</td><td style="color:#10b981">✅</td><td>专业版100个模板</td></tr>
+        <tr><td>API/SDK集成</td><td style="color:#10b981">✅</td><td>专业版开放</td></tr>
+        <tr><td>身份验证(IDV)</td><td style="color:#10b981">✅</td><td>增值服务</td></tr>
+        <tr><td>AI合同审查</td><td style="color:#10b981">✅</td><td>2026年eSign.AI品牌升级</td></tr>
+        <tr><td>多语言签署</td><td style="color:#10b981">✅</td><td>中英+多语种</td></tr>
+        <tr><td>Singpass集成</td><td style="color:#10b981">✅</td><td>新加坡身份验证</td></tr>
+        <tr><td>智方便集成</td><td style="color:#10b981">✅</td><td>香港身份验证</td></tr>
+        <tr><td>Lark/飞书集成</td><td style="color:#10b981">✅</td><td>出海企业常用</td></tr>
+        <tr><td>Google Workspace</td><td style="color:#10b981">✅</td><td>海外标准集成</td></tr>
+      </table>
+    </div>
+    <div class="chart-container">
+      <div class="chart-header">合规认证声称</div>
+      <table>
+        <tr><th>合规标准</th><th>声称状态</th><th>验证说明</th></tr>
+        <tr><td>eIDAS (EU)</td><td style="color:#10b981">✅ 声称符合</td><td>官网标注"EU Trusted List"</td></tr>
+        <tr><td>ESIGN Act / UETA (US)</td><td style="color:#10b981">✅ 声称合规</td><td>官网标注</td></tr>
+        <tr><td>GDPR (EU)</td><td style="color:#10b981">✅ 声称合规</td><td>官网标注</td></tr>
+        <tr><td>FDA 21 CFR Part 11</td><td style="color:#10b981">✅ 声称合规</td><td>官网标注（医疗/生命科学）</td></tr>
+        <tr><td>香港 ETO (Cap.553)</td><td>❓ 未明确声称</td><td>有港企客户但未明确引用法规</td></tr>
+        <tr><td>新加坡 ETA</td><td>❓ 未明确声称</td><td>有Singpass集成但未说明合规级别</td></tr>
+        <tr><td>马来西亚 DSA/ECA</td><td>❓ 未明确声称</td><td>有马来办公室但无具体声明</td></tr>
+      </table>
+      <div class="warning-box">
+        <h4>合规声称待验证</h4>
+        <p>eSignGlobal在官网prominently展示eIDAS/ESIGN/GDPR标识，但对APAC具体法域（港/新/马）的合规声明<strong>模糊</strong>。未见具体引用各法域法规条款号或签名级别声明（SES/AES/QES）。需结合global-esign-law skill进一步验证。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Strategic Analysis -->
+<div class="section">
+  <div class="section-title">战略定位与竞争分析</div>
+  <div class="chart-container">
+    <div class="chart-header">eSignGlobal vs DocuSign vs 我方 三角对比</div>
+    <table>
+      <tr><th>维度</th><th>eSignGlobal</th><th>DocuSign</th><th>我方eSign</th></tr>
+      <tr><td>母公司规模</td><td>年营收5亿元，独角兽</td><td>年营收232亿元，纳斯达克上市</td><td>早期阶段</td></tr>
+      <tr><td>核心定位</td><td>"中国企业出海的电子签基础设施"</td><td>全球IAM智能协议平台</td><td>独立海外签产品</td></tr>
+      <tr><td>目标客群</td><td>中国出海企业（央企/港企为主）</td><td>全球全规模企业</td><td>中国出海企业</td></tr>
+      <tr><td>海外客户数</td><td>~200家付费出海企业（PR称1000+含免费）</td><td>国际约53万家</td><td>早期</td></tr>
+      <tr><td>地理重心</td><td>香港（核心）→ 新加坡/马来/欧洲</td><td>美国70% → 全球</td><td>港/新/马/泰</td></tr>
+      <tr><td>CA架构</td><td>未明确披露海外CA</td><td>自建CA(AATL)+第三方</td><td>TrustAsia(AATL)</td></tr>
+      <tr><td>APAC合规深度</td><td>Singpass/智方便集成但法规声称模糊</td><td>声称多法域但需验证</td><td>SES级别，法规逐条验证</td></tr>
+      <tr><td>定价（100份/年）</td><td>$299/年（基础版含100份）</td><td>$600+/年</td><td>待定</td></tr>
+      <tr><td>AI能力</td><td>强（AI合同大模型，Agent年收入1亿）</td><td>强（IAM+Navigator）</td><td>基础</td></tr>
+      <tr><td>竞争策略</td><td>伴随出海 → 主动出海</td><td>PLG+Enterprise SLG</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-header">eSignGlobal的优势与弱点</div>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:14px;color:#10b981;margin-bottom:8px">优势</h4>
+        <ul style="font-size:13px;color:#374151;padding-left:16px;line-height:2">
+          <li><strong>中国市场第一</strong>：35%份额，品牌背书强</li>
+          <li><strong>企业印章能力</strong>：国内核心能力直接延伸海外</li>
+          <li><strong>中文服务深度</strong>：中文界面/中文客服/飞书集成</li>
+          <li><strong>AI先发</strong>：AI合同大模型已商业化（1亿+收入）</li>
+          <li><strong>Singpass/智方便集成</strong>：本地身份验证链路</li>
+          <li><strong>蚂蚁生态</strong>：C轮蚂蚁领投，Alipay+生态协同可能</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:14px;color:#ef4444;margin-bottom:8px">弱点 / 可攻击点</h4>
+        <ul style="font-size:13px;color:#374151;padding-left:16px;line-height:2">
+          <li><strong>海外客户极度集中香港</strong>：6/9案例在HK，市场广度不足</li>
+          <li><strong>仍处"伴随出海"阶段</strong>：海外本地企业客户极少</li>
+          <li><strong>APAC合规声称模糊</strong>：未见具体法规引用和签名级别声明</li>
+          <li><strong>海外营收未披露</strong>：可能占比极小（&lt;5%总营收）</li>
+          <li><strong>品牌认知弱</strong>：海外非中国企业圈几乎无知名度</li>
+          <li><strong>定价透明度</strong>：IDV/SMS增值费用未公开</li>
+          <li><strong>CA架构不明</strong>：海外签名使用哪家CA未披露</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Data Source -->
+<div class="section">
+  <div class="section-title">数据来源汇总</div>
+  <div class="chart-container">
+    <table>
+      <tr><th>来源</th><th>类型</th><th>覆盖数据</th><th>可信度</th></tr>
+      <tr><td>沙利文2025中国电子签名报告 (2026.4)</td><td>第三方权威研究</td><td>市场份额35%、CR5 69.4%、2024营收5亿+、增速31%</td><td>高</td></tr>
+      <tr><td>MarketsandMarkets报告</td><td>第三方研究</td><td>全球第6、亚太第1</td><td>高</td></tr>
+      <tr><td>e签宝2025年度回顾 (2026.1.14)</td><td>官方一手</td><td>海外1000家、3数据中心、AI 1亿、付费客户28.6万</td><td>高（但为宣传口径）</td></tr>
+      <tr><td>e签宝官网公司介绍</td><td>官方一手</td><td>融资历史、员工数、分支机构、成立时间</td><td>高</td></tr>
+      <tr><td>eSign.AI官网定价博客</td><td>官方一手</td><td>定价体系：基础$199/专业$6999、$4/份</td><td>高</td></tr>
+      <tr><td>eSign.AI Customer Stories</td><td>官方一手</td><td>6个公开客户案例（数码港/中建/远东宏信/OPPO等）</td><td>高</td></tr>
+      <tr><td>百度百科</td><td>综合参考</td><td>估值71亿（2024胡润）</td><td>中</td></tr>
+      <tr><td>EMIS (新加坡子公司 — DocuSign对比参考)</td><td>第三方商业数据</td><td>无eSignGlobal ACRA数据</td><td>—</td></tr>
+    </table>
+    <div class="warning-box">
+      <h4>数据局限性说明</h4>
+      <p>eSignGlobal/e签宝为未上市公司，<strong>不披露详细财务报表</strong>。以下关键数据缺失：<br>
+      • 海外业务独立营收<br>
+      • 海外付费客户具体数量（200 vs 1000口径不一）<br>
+      • 各地区收入占比<br>
+      • CA架构和证书提供商<br>
+      • 具体法域合规认证证书编号<br>
+      现有数据主要来自官方宣传和第三方报告，存在美化可能。</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// Geographic Distribution
+new Chart(document.getElementById('geoChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['香港（核心）', '新加坡', '马来西亚', '欧洲（法兰克福）', '全球/其他'],
+    datasets: [{
+      data: [50, 15, 10, 10, 15],
+      backgroundColor: ['#e11d48', '#10b981', '#f59e0b', '#3b82f6', '#6b7280'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } },
+      title: { display: true, text: '海外业务重心分布（基于客户案例推断）', font: { size: 12 } }
+    },
+    cutout: '55%'
+  }
+});
+
+// Industry Distribution
+new Chart(document.getElementById('industryChart'), {
+  type: 'bar',
+  data: {
+    labels: ['建筑/工程', '金融/租赁', '房地产', '科技/电子', '政府/园区', '制造业'],
+    datasets: [{
+      label: '已公开案例数',
+      data: [1, 2, 1, 2, 1, 1],
+      backgroundColor: '#3b82f6',
+      borderRadius: 6
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true, max: 3, ticks: { stepSize: 1 } } }
+  }
+});
+</script>
+
+</body>
+</html>
