@@ -56,7 +56,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe 
   .table-section.open .insight-box, .table-section.open .warning-box, .table-section.open .source-note { display: block; }
   table { font-size: 10px; white-space: nowrap; }
   canvas { display: none !important; }
-  .chart-container:has(canvas) { display: none !important; }
+  .has-canvas { display: none !important; }
 }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 table th { text-align: left; padding: 7px 8px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
@@ -154,7 +154,7 @@ table tr:hover td { background: #f9fafb; }
 <div class="section">
   <div class="section-title">公司背景与融资</div>
   <div class="two-col">
-    <div class="chart-container">
+    <div class="chart-container has-canvas">
       <div class="chart-header">融资历程</div>
       <div class="timeline">
         <div class="timeline-item"><span class="time">2015年初 · Pre-A轮</span><div class="event">1,000万 — 集素资本、绩优投资</div></div>
@@ -219,7 +219,7 @@ table tr:hover td { background: #f9fafb; }
       <canvas id="geoChart" height="240"></canvas>
       <p class="source-note">来源：官网 + 客户案例地域分布</p>
     </div>
-    <div class="chart-container">
+    <div class="chart-container has-canvas">
       <div class="chart-header">海外客户行业分布</div>
       <canvas id="industryChart" height="240"></canvas>
       <p class="source-note">来源：eSignGlobal客户案例页面（6个公开案例）</p>
