@@ -55,6 +55,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe 
   .table-section .insight-box, .table-section .warning-box, .table-section .source-note { display: none; }
   .table-section.open .insight-box, .table-section.open .warning-box, .table-section.open .source-note { display: block; }
   table { font-size: 10px; white-space: nowrap; }
+  canvas { display: none !important; }
+  .chart-container:has(canvas) { display: none !important; }
+  [id*="Chart"], [id*="chart"], [id*="Growth"], [id*="Composition"], [id*="iam"], [id*="pyramid"] { display: none !important; }
 }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 table th { text-align: left; padding: 10px 12px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; }
@@ -627,17 +630,23 @@ table tr:hover td { background: #f9fafb; }
 
 <script>
 // Mobile: toggle table sections
-if (window.innerWidth <= 768) {
-  document.querySelectorAll('.chart-container').forEach(el => {
-    if (el.querySelector('table')) {
-      el.classList.add('table-section');
-      const header = el.querySelector('.chart-header');
-      if (header) {
-        header.addEventListener('click', () => el.classList.toggle('open'));
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth <= 768) {
+    // Hide chart containers on mobile
+    document.querySelectorAll('.chart-container').forEach(el => {
+      if (el.querySelector('canvas') && !el.querySelector('table')) {
+        el.style.display = 'none';
       }
-    }
-  });
-}
+      if (el.querySelector('table')) {
+        el.classList.add('table-section');
+        var header = el.querySelector('.chart-header');
+        if (header) {
+          header.addEventListener('click', function() { el.classList.toggle('open'); });
+        }
+      }
+    });
+  }
+});
 
 // Revenue Growth
 new Chart(document.getElementById('revenueGrowth'), {

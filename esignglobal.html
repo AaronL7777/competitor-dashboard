@@ -55,6 +55,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe 
   .table-section .insight-box, .table-section .warning-box, .table-section .source-note { display: none; }
   .table-section.open .insight-box, .table-section.open .warning-box, .table-section.open .source-note { display: block; }
   table { font-size: 10px; white-space: nowrap; }
+  canvas { display: none !important; }
+  .chart-container:has(canvas) { display: none !important; }
 }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 table th { text-align: left; padding: 7px 8px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
@@ -462,18 +464,23 @@ table tr:hover td { background: #f9fafb; }
 </div>
 
 <script>
-// Mobile: toggle table sections (no :has() needed)
-if (window.innerWidth <= 768) {
-  document.querySelectorAll('.chart-container').forEach(el => {
-    if (el.querySelector('table')) {
-      el.classList.add('table-section');
-      const header = el.querySelector('.chart-header');
-      if (header) {
-        header.addEventListener('click', () => el.classList.toggle('open'));
+// Mobile: toggle table sections
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth <= 768) {
+    document.querySelectorAll('.chart-container').forEach(el => {
+      if (el.querySelector('canvas') && !el.querySelector('table')) {
+        el.style.display = 'none';
       }
-    }
-  });
-}
+      if (el.querySelector('table')) {
+        el.classList.add('table-section');
+        var header = el.querySelector('.chart-header');
+        if (header) {
+          header.addEventListener('click', function() { el.classList.toggle('open'); });
+        }
+      }
+    });
+  }
+});
 
 // Geographic Distribution
 new Chart(document.getElementById('geoChart'), {
