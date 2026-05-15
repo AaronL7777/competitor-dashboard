@@ -48,15 +48,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe 
   .source-note { font-size: 9px; }
   .office-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .apac-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .table-section table { display: none; overflow-x: auto; }
+  .table-section .chart-header { cursor: pointer; padding-right: 24px; position: relative; }
+  .table-section .chart-header::after { content: '展开 ▼'; position: absolute; right: 0; font-size: 10px; color: #9ca3af; font-weight: 400; }
+  .table-section.open table { display: block; }
+  .table-section.open .chart-header::after { content: '收起 ▲'; }
+  .table-section .insight-box, .table-section .warning-box, .table-section .source-note { display: none; }
+  .table-section.open .insight-box, .table-section.open .warning-box, .table-section.open .source-note { display: block; }
   table { font-size: 10px; white-space: nowrap; }
-  .chart-container { border-radius: 8px; padding: 0 !important; margin-bottom: 8px; }
-  .chart-container .chart-header { padding: 12px 14px; margin: 0; cursor: pointer; position: relative; border-bottom: 1px solid #eee; }
-  .chart-container .chart-header::after { content: '展开 ▼'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 10px; color: #9ca3af; }
-  .chart-container > *:not(.chart-header) { display: none; }
-  .chart-container.open > * { display: block; }
-  .chart-container.open > .chart-header::after { content: '收起 ▲'; }
-  .chart-container.open { padding: 12px !important; }
-  .chart-container canvas { display: none !important; }
+  canvas { display: none !important; }
+  .has-canvas { display: none !important; }
 }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 table th { text-align: left; padding: 10px 12px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; }
@@ -605,18 +606,23 @@ table tr:hover td { background: #f9fafb; }
 </div>
 </div>
 <script>
-// Mobile: all chart-containers are foldable
+// Mobile: toggle table sections
 document.addEventListener('DOMContentLoaded', function() {
   if (window.innerWidth <= 768) {
-    var containers = document.querySelectorAll('.chart-container');
-    for (var i = 0; i < containers.length; i++) {
-      var el = containers[i];
-      var header = el.querySelector('.chart-header');
-      if (header) {
-        (function(container) {
-          container.querySelector('.chart-header').addEventListener('click', function() {
-            container.classList.toggle('open');
-          });
+    document.querySelectorAll('.chart-container').forEach(el => {
+      if (el.querySelector('canvas') && !el.querySelector('table')) {
+        el.classList.add('has-canvas');
+      }
+      if (el.querySelector('table')) {
+        el.classList.add('table-section');
+        var header = el.querySelector('.chart-header');
+        if (header) {
+          header.addEventListener('click', function() { el.classList.toggle('open'); });
+        }
+      }
+    });
+  }
+});
         })(el);
       } else {
         el.style.display = 'none';
