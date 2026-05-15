@@ -56,9 +56,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe 
   .table-section .insight-box, .table-section .warning-box, .table-section .source-note { display: none; }
   .table-section.open .insight-box, .table-section.open .warning-box, .table-section.open .source-note { display: block; }
   table { font-size: 10px; white-space: nowrap; }
-  canvas { display: none !important; }
-  .has-canvas { display: none !important; }
-  [id*="Chart"], [id*="chart"], [id*="Growth"], [id*="Composition"], [id*="iam"], [id*="pyramid"] { display: none !important; }
+  .chart-container { display: none; }
+  .table-section { display: block !important; }
 }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 table th { text-align: left; padding: 10px 12px; background: #f9fafb; color: #6b7280; font-weight: 500; border-bottom: 1px solid #e5e7eb; }
@@ -176,12 +175,12 @@ table tr:hover td { background: #f9fafb; }
 <p class="source-note">来源：DocuSign Q4 FY2026 Earnings Press Release (2026.3.17) | FY2025数据来自Bullfincher及The Motley Fool确认一次性税务收益</p>
 </div>
 <div class="two-col">
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">营收增长趋势</div>
 <canvas height="220" id="revenueGrowth"></canvas>
 <p class="source-note">来源：各年度Earnings Release</p>
 </div>
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">收入构成（FY2026）</div>
 <canvas height="220" id="revenueComposition"></canvas>
 <p class="source-note">来源：Q4 FY2026 Earnings Release</p>
@@ -305,12 +304,12 @@ table tr:hover td { background: #f9fafb; }
 <p class="source-note">来源：EMIS Company Profile (基于ACRA法定申报) | CRN Asia (2026)</p>
 </div>
 <div class="two-col">
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">国际收入结构推算</div>
 <canvas height="240" id="intlBreakdown"></canvas>
 <p class="source-note">来源：EMEA基于Irish Examiner法定数据；APAC+其他为推算值（总国际$9.45亿 - EMEA约$3.3亿）</p>
 </div>
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">地域增速对比</div>
 <canvas height="240" id="geoGrowth"></canvas>
 <p class="source-note">来源：Bullfincher + Q4 Earnings Call</p>
@@ -434,7 +433,7 @@ table tr:hover td { background: #f9fafb; }
 <!-- Customer Segments -->
 <div class="section">
 <div class="section-title">客群画像与行业分布</div>
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">客户规模分层与行业重要性</div>
 <div class="two-col">
 <div>
@@ -476,7 +475,7 @@ table tr:hover td { background: #f9fafb; }
 <div class="section">
 <div class="section-title">IAM 战略平台（核心增长引擎）</div>
 <div class="two-col">
-<div class="chart-container has-canvas">
+<div class="chart-container">
 <div class="chart-header">IAM ARR增长轨迹</div>
 <canvas height="200" id="iamChart"></canvas>
 <p class="source-note">来源：各季度Earnings Call | FY2025末2.3%来自Q4 Call</p>
