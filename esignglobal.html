@@ -507,11 +507,11 @@ new Chart(document.getElementById('geoChart'), {
 new Chart(document.getElementById('industryChart'), {
   type: 'bar',
   data: {
-    labels: ['建筑/工程', '金融/租赁', '房地产', '科技/电子', '政府/园区', '制造业'],
+    labels: ['金融（6家）', '科技/制造（4家）', '连锁/消费（3家）', '房地产（3家）', '建筑/工程（1家）', '政府/园区（1家）', '旅游/其他（2家）'],
     datasets: [{
-      label: '已公开案例数',
-      data: [1, 2, 1, 2, 1, 1],
-      backgroundColor: '#3b82f6',
+      label: '客户数',
+      data: [6, 4, 3, 3, 1, 1, 2],
+      backgroundColor: ['#1d4ed8', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#e0e7ff'],
       borderRadius: 6
     }]
   },
