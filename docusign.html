@@ -630,8 +630,8 @@ new Chart(document.getElementById('revenueGrowth'), {
   data: {
     labels: ['FY2024\n(截至2024.1)', 'FY2025\n(截至2025.1)', 'FY2026\n(截至2026.1)', 'FY2027E'],
     datasets: [{
-      label: '总营收（亿人民币）',
-      data: [200, 216, 232, 253],
+      label: 'Total Revenue ($B)',
+      data: [27.6, 29.8, 32.0, 34.9],
       backgroundColor: ['#93c5fd', '#60a5fa', '#3b82f6', '#1d4ed8'],
       borderRadius: 6
     }]
@@ -639,7 +639,7 @@ new Chart(document.getElementById('revenueGrowth'), {
   options: {
     responsive: true,
     plugins: { legend: { display: false } },
-    scales: { y: { beginAtZero: false, min: 180, ticks: { callback: v => v + '亿' } } }
+    scales: { y: { beginAtZero: false, min: 25, ticks: { callback: v => '$' + v + '亿' } } }
   }
 });
 
@@ -669,14 +669,14 @@ new Chart(document.getElementById('geoGrowth'), {
   data: {
     labels: ['美国', '国际（整体）', 'EMEA子公司'],
     datasets: [
-      { label: 'FY2025（亿元）', data: [155, 60.5, 21.4], backgroundColor: '#93c5fd', borderRadius: 4 },
-      { label: 'FY2026（亿元）', data: [165, 68.5, 24], backgroundColor: '#3b82f6', borderRadius: 4 }
+      { label: 'FY2025 ($亿)', data: [21.4, 8.34, 2.95], backgroundColor: '#93c5fd', borderRadius: 4 },
+      { label: 'FY2026 ($亿)', data: [22.7, 9.45, 3.3], backgroundColor: '#3b82f6', borderRadius: 4 }
     ]
   },
   options: {
     responsive: true,
     plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
-    scales: { y: { beginAtZero: true, ticks: { callback: v => v + '亿' } } }
+    scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v + '亿' } } }
   }
 });
 
@@ -732,14 +732,14 @@ new Chart(document.getElementById('iamChart'), {
   data: {
     labels: ['FY2025末\n(2.3%)', 'FY2026 Q2\n(约6%)', 'FY2026末\n(10.8%)', 'FY2027E\n(18%)'],
     datasets: [{
-      label: 'IAM ARR（亿元）',
-      data: [5.1, 14.5, 25.4, 43.5],
+      label: 'IAM ARR ($亿)',
+      data: [0.7, 2.0, 3.5, 6.0],
       borderColor: '#8b5cf6',
       backgroundColor: 'rgba(139,92,246,0.1)',
       fill: true, tension: 0.3, pointRadius: 5, pointBackgroundColor: '#8b5cf6'
     }]
   },
-  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: v => v + '亿' } } } }
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v + '亿' } } } }
 });
 </script>
 </body>
